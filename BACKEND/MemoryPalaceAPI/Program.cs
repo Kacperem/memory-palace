@@ -1,3 +1,6 @@
+using MemoryPalaceAPI.Entities;
+using MemoryPalaceAPI.Seeders;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +10,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<MemoryPalaceDbContext>();
+builder.Services.AddScoped<MemoryPalaceSeeder>();
+
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+
+var seeder = scope.ServiceProvider.GetRequiredService<MemoryPalaceSeeder>();
+
+seeder.Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
