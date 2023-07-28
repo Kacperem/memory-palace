@@ -6,7 +6,7 @@ namespace MemoryPalaceAPI.Entities
     {
         private string _connectionString = "Server=(localdb)\\mssqllocaldb;Database=MemoryPalaceDb;Trusted_Connection=True;";
         public DbSet<TwoDigitElement> TwoDigitElements { get; set; }
-        public DbSet<TwoDigitSystem> twoDigitSystems { get; set; }
+        public DbSet<TwoDigitSystem> TwoDigitSystems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
