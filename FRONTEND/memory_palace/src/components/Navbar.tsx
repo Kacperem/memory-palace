@@ -13,6 +13,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import { Link } from 'react-router-dom';
 
 const pages = ['Two-Digit System', 'Training'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -126,12 +127,12 @@ function Navbar() {
           <ButtonGroup >
           
               <IconButton sx={{ p: 1 }}>
-              <Button variant="contained" color="secondary" endIcon={<LoginIcon />}>
+              <Button component={Link} to="/login" variant="contained" color="secondary" endIcon={<LoginIcon />}>
   Login
 </Button>
               </IconButton>
               <IconButton sx={{ p: 1 }}>
-              <Button variant="contained" color="secondary" endIcon={<VpnKeyIcon />}>
+              <Button component={Link} to="/register" variant="contained" color="secondary" endIcon={<VpnKeyIcon />}>
   Register
 </Button>
               </IconButton>
