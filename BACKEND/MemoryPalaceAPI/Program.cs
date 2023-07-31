@@ -1,5 +1,7 @@
 using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Seeders;
+using MemoryPalaceAPI.Services;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MemoryPalaceDbContext>();
 builder.Services.AddScoped<MemoryPalaceSeeder>();
+builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddScoped<ITwoDigitSystemService, TwoDigitSystemService>();
 
 var app = builder.Build();
 
