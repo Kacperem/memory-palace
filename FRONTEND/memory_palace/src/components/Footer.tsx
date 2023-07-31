@@ -6,9 +6,9 @@ import Link from '@mui/material/Link';
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
-      {'Footer © '}
+      {'Palace Memory © '}
       <Link color="inherit" href="https://github.com/Kacperem/memory-palace">
-        Your Website
+        Repo
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
