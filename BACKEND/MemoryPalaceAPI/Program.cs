@@ -11,6 +11,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using MemoryPalaceAPI.Models.Validators;
 using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +61,10 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<RequestTimeMiddleware>();
+
+
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
@@ -68,6 +73,9 @@ var seeder = scope.ServiceProvider.GetRequiredService<MemoryPalaceSeeder>();
 
 seeder.Seed();
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+app.UseMiddleware<RequestTimeMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -75,6 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 
