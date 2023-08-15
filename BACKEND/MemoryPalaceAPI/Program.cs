@@ -18,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 //Authentication and authorization
 var authenticationSettings = new AuthenticationSettings();
 
+//cors policy
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
@@ -64,6 +66,15 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173",
+                                              "http://www.example.com");
+                      });
+});
 
 var app = builder.Build();
 
@@ -86,6 +97,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
