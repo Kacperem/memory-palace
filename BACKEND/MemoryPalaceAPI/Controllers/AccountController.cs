@@ -1,6 +1,7 @@
 ﻿using MemoryPalaceAPI.Models;
 using MemoryPalaceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 
 namespace MemoryPalaceAPI.Controllers
 {
@@ -25,6 +26,7 @@ namespace MemoryPalaceAPI.Controllers
         public ActionResult Login([FromBody] LoginDto dto)
         {
             string token = _accountService.GenerateJwt(dto);
+            //return Ok(token);
             return Ok(token);
         }
     }

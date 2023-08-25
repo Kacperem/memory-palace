@@ -12,14 +12,16 @@ using FluentValidation;
 using MemoryPalaceAPI.Models.Validators;
 using MemoryPalaceAPI.Models;
 using MemoryPalaceAPI.Middleware;
+using MemoryPalaceAPI.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+
 //Authentication and authorization
 var authenticationSettings = new AuthenticationSettings();
-
-//cors policy
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
@@ -59,13 +61,19 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ITwoDigitSystemService, TwoDigitSystemService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<CreateTwoDigitSystemDto>, CreateTwoDigitSystemDtoValidator>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
 
+
+//cors policy
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
