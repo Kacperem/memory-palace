@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace MemoryPalaceAPI.Controllers
 {
     [Route("api/TwoDigitSystem")]
-    [ApiController]
+    [ApiController] //this annotation is used to auto validate a DTO
+    [Authorize]
 
     public class TwoDigitSystemController : ControllerBase
     {
@@ -19,10 +20,6 @@ namespace MemoryPalaceAPI.Controllers
         [HttpPost]
         public ActionResult Create([FromBody] CreateTwoDigitSystemDto createTwoDigitSystemDto) 
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var id = _twoDigitSystemService.Create(createTwoDigitSystemDto);
             return Created($"/api/TwoDigitSystem/{id}", null);
         }
@@ -30,16 +27,13 @@ namespace MemoryPalaceAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            var isDeleted = _twoDigitSystemService.Delete(id);
+            _twoDigitSystemService.Delete(id);
 
-            if (isDeleted)
-            {
-                return NoContent();
-            }
-
-            return NotFound();
+            return NoContent();
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+        //[AllowAnonymous]
         public ActionResult<IEnumerable<TwoDigitSystemDto>> GetAll()
         {
             var twoDigitSystemsDtos = _twoDigitSystemService.GetAll();
@@ -50,23 +44,12 @@ namespace MemoryPalaceAPI.Controllers
         public ActionResult<TwoDigitSystemDto> GetById([FromRoute] int id)
         {
             var twoDigitSystemsDto = _twoDigitSystemService.GetById(id);
-            if (twoDigitSystemsDto is null) return NotFound(); ;
-            
             return Ok(twoDigitSystemsDto);
         }
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] CreateTwoDigitSystemDto createTwoDigitSystemDto, [FromRoute]int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var isUpdated = _twoDigitSystemService.Update(id, createTwoDigitSystemDto);
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
-
+            _twoDigitSystemService.Update(id, createTwoDigitSystemDto);
             return Ok();
         }
     }
