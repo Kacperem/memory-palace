@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -78,8 +79,17 @@ namespace MemoryPalaceAPI.Services
                 signingCredentials: cred);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+            var tokenString = tokenHandler.WriteToken(token);
 
+            var response = new
+            {
+                tokenType = "Bearer",
+                token = tokenString,
+                expires = expires.ToString("yyyy-MM-dd HH:mm:ss"),
+                userId = user.Id
+            };
+
+            return JsonConvert.SerializeObject(response);
         }
     }
 }
