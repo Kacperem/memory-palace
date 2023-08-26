@@ -59,14 +59,19 @@ builder.Services.AddScoped<MemoryPalaceSeeder>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped<ITwoDigitSystemService, TwoDigitSystemService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<CreateTwoDigitSystemDto>, CreateTwoDigitSystemDtoValidator>();
-builder.Services.AddScoped<IUserContextService, UserContextService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
+
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, TwoDigitSystemRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, UserRequirementHandler>();
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();

@@ -53,7 +53,7 @@ namespace MemoryPalaceAPI.Services
                 throw new NotFoundException("Restaurant not found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
-                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+                new TwoDigitSystemRequirement(ResourceOperation.Delete)).Result;
 
             if (!authorizationResult.Succeeded)
             {
@@ -84,7 +84,7 @@ namespace MemoryPalaceAPI.Services
                 throw new NotFoundException("Restaurant not found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
-                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+                new TwoDigitSystemRequirement(ResourceOperation.Delete)).Result;
 
             if (!authorizationResult.Succeeded)
             {
@@ -106,7 +106,7 @@ namespace MemoryPalaceAPI.Services
                 throw new NotFoundException("Restaurant not found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
-                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+                new TwoDigitSystemRequirement(ResourceOperation.Update)).Result;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
