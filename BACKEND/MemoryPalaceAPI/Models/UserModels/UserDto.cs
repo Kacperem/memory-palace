@@ -1,4 +1,4 @@
-﻿namespace MemoryPalaceAPI.Models
+﻿namespace MemoryPalaceAPI.Models.UserModels
 {
     public class UserDto
     {

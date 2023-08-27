@@ -9,11 +9,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using MemoryPalaceAPI.Models.Validators;
-using MemoryPalaceAPI.Models;
 using MemoryPalaceAPI.Middleware;
 using MemoryPalaceAPI.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using MemoryPalaceAPI.Models.AccountModels;
+using MemoryPalaceAPI.Models.AccountModels.Validators;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels.Validators;
+using MemoryPalaceAPI.Models.UserModels;
+using MemoryPalaceAPI.Models.UserModels.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +71,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<CreateTwoDigitSystemDto>, CreateTwoDigitSystemDtoValidator>();
+builder.Services.AddScoped<IValidator<TwoDigitSystemQuery>, TwoDigitSystemQueryValidator>();
+builder.Services.AddScoped<IValidator<UserQuery>, UserQueryValdiator>();
 
 builder.Services.AddHttpContextAccessor();
 
