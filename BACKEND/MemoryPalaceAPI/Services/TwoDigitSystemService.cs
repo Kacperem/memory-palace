@@ -3,15 +3,18 @@ using MemoryPalaceAPI.Authorization;
 using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
 using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MemoryPalaceAPI.Services
 {
     public interface ITwoDigitSystemService
     {
         TwoDigitSystemDto GetById(int id);
-        IEnumerable<TwoDigitSystemDto> GetAll();
+        PagedResult<TwoDigitSystemDto> GetAll(TwoDigitSystemQuery twoDigitSystemQuery);
         int Create(CreateTwoDigitSystemDto createTwoDigitSystemDto);
         bool Update(int id, CreateTwoDigitSystemDto createTwoDigitSystemDto);
         void Delete(int id);
@@ -64,14 +67,37 @@ namespace MemoryPalaceAPI.Services
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<TwoDigitSystemDto> GetAll()
+        public PagedResult<TwoDigitSystemDto> GetAll(TwoDigitSystemQuery twoDigitSystemQuery)
         {
-            var twoDigitSystems = _dbContext.
-                TwoDigitSystems
-                .Include(r => r.TwoDigitElements)
+            var baseQuery = _dbContext
+                .TwoDigitSystems
+            .Include(r => r.TwoDigitElements)
+            .Where(r => twoDigitSystemQuery.SearchPhrase == null ||
+                   r.TwoDigitElements.Any(element => element.Text.ToLower().Contains(twoDigitSystemQuery.SearchPhrase.ToLower())));
+
+            if (!string.IsNullOrEmpty(twoDigitSystemQuery.SortBy))
+            {
+                var columnsSelectors = new Dictionary<string, Expression<Func<TwoDigitSystem, object>>>
+                {
+                    { nameof(TwoDigitSystem.Id), r => r.Id },
+                };
+
+                var selectedColumn = columnsSelectors[twoDigitSystemQuery.SortBy];
+
+                baseQuery = twoDigitSystemQuery.SortDirection == SortDirection.ASC
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var twoDigitSystems = baseQuery
+                .Skip(twoDigitSystemQuery.PageSize * (twoDigitSystemQuery.PageNumber - 1))
+                .Take(twoDigitSystemQuery.PageSize)
                 .ToList();
+
+            var totalItemsCount = baseQuery.Count();
             var twoDigitSystemsDtos = _mapper.Map<List<TwoDigitSystemDto>>(twoDigitSystems);
-            return twoDigitSystemsDtos;
+            var result = new PagedResult<TwoDigitSystemDto>(twoDigitSystemsDtos, totalItemsCount, twoDigitSystemQuery.PageSize, twoDigitSystemQuery.PageNumber);
+            return result;
         }
 
         public TwoDigitSystemDto GetById(int id)

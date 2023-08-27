@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace MemoryPalaceAPI.Models.Validators
+namespace MemoryPalaceAPI.Models.TwoDigitSystemModels.Validators
 {
     public class CreateTwoDigitSystemDtoValidator : AbstractValidator<CreateTwoDigitSystemDto>
     {
