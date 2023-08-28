@@ -1,5 +1,6 @@
-import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Hero from '../components/Hero';
+import Features from '../components/Features';
 
 
 const defaultTheme = createTheme();
@@ -7,9 +8,8 @@ const defaultTheme = createTheme();
 export default function Home() {
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh' }}>
-        
-      </Grid>
+        <Hero />
+        <Features />
     </ThemeProvider>
   )
 }
