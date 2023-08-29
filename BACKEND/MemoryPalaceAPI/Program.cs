@@ -108,7 +108,7 @@ builder.Services.AddScoped<IAuthorizationHandler, UserRequirementHandler>();
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
-
+builder.Services.AddScoped<SwaggerBasicAuthMiddleware>();
 
 //cors policy
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -136,13 +136,17 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseMiddleware<RequestTimeMiddleware>();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseMiddleware<SwaggerBasicAuthMiddleware>();
 
+// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+//app.UseSwaggerAuthorized();
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
 
 app.UseHttpsRedirection();
 
