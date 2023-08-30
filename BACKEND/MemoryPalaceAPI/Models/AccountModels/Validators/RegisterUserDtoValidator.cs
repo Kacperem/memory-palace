@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
 using MemoryPalaceAPI.Entities;
+using MemoryPalaceAPI.Models.AccountModels;
 
-namespace MemoryPalaceAPI.Models.Validators
+namespace MemoryPalaceAPI.Models.AccountModels.Validators
 {
     public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
     {

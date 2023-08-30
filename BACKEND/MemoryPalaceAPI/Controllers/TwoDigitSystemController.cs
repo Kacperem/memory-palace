@@ -1,5 +1,5 @@
 ﻿using MemoryPalaceAPI.Entities;
-using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
 using MemoryPalaceAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,9 +34,9 @@ namespace MemoryPalaceAPI.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin")]
         //[AllowAnonymous]
-        public ActionResult<IEnumerable<TwoDigitSystemDto>> GetAll()
+        public ActionResult<IEnumerable<TwoDigitSystemDto>> GetAll([FromQuery]TwoDigitSystemQuery twoDigitSystemQuery)
         {
-            var twoDigitSystemsDtos = _twoDigitSystemService.GetAll();
+            var twoDigitSystemsDtos = _twoDigitSystemService.GetAll(twoDigitSystemQuery);
 
             return Ok(twoDigitSystemsDtos);
         }

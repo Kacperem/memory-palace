@@ -1,4 +1,4 @@
-﻿namespace MemoryPalaceAPI.Models
+﻿namespace MemoryPalaceAPI.Models.TwoDigitSystemModels
 {
     public class TwoDigitElementDto
     {

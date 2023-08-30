@@ -1,6 +1,6 @@
 ﻿using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
-using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.AccountModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

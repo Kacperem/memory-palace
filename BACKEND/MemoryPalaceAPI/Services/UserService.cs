@@ -3,15 +3,19 @@ using MemoryPalaceAPI.Authorization;
 using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
 using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
+using MemoryPalaceAPI.Models.UserModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace MemoryPalaceAPI.Services
 {
     public interface IUserService
     {
         UserDto GetById(int id);
-        IEnumerable<UserDto> GetAll();
+        PagedResult<UserDto> GetAll(UserQuery userQuery);
 
 
 
@@ -31,14 +35,38 @@ namespace MemoryPalaceAPI.Services
             _userContextService = userContextService;
         }
 
-        public IEnumerable<UserDto> GetAll()
+        public PagedResult<UserDto> GetAll(UserQuery userQuery)
         {
-            var users = _dbContext.
-                Users
+            var baseQuery = _dbContext
+                .Users
                 .Include(r => r.Role)
+                .Where(r => userQuery.SearchPhrase == null ||
+                   r.Email.ToLower().Contains(userQuery.SearchPhrase.ToLower()));
+
+            if (!string.IsNullOrEmpty(userQuery.SortBy))
+            {
+                var columnsSelectors = new Dictionary<string, Expression<Func<User, object>>>
+                {
+                    { nameof(User.Id), r => r.Id },
+                    { "Role.Name", r => r.Role.Name},
+                    { nameof(User.Email), r => r.Email }
+                };
+                var selectedColumn = columnsSelectors[userQuery.SortBy];
+
+                baseQuery = userQuery.SortDirection == SortDirection.ASC
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+            var users = baseQuery
+                .Skip(userQuery.PageSize * (userQuery.PageNumber - 1))
+                .Take(userQuery.PageSize)
                 .ToList();
+
+            var totalItemsCount = baseQuery.Count();
+
             var usersDtos = _mapper.Map<List<UserDto>>(users);
-            return usersDtos;
+            var result = new PagedResult<UserDto>(usersDtos, totalItemsCount, userQuery.PageSize, userQuery.PageNumber);
+            return result;
         }
 
         public UserDto GetById(int id)
