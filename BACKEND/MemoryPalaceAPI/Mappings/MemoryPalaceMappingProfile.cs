@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MemoryPalaceAPI.Entities;
-using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
+using MemoryPalaceAPI.Models.UserModels;
 
 namespace MemoryPalaceAPI.Mappings
 {

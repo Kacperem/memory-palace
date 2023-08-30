@@ -1,4 +1,5 @@
-﻿using MemoryPalaceAPI.Models;
+﻿using MemoryPalaceAPI.Models.TwoDigitSystemModels;
+using MemoryPalaceAPI.Models.UserModels;
 using MemoryPalaceAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ namespace MemoryPalaceAPI.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public ActionResult<IEnumerable<UserDto>> GetAll()
+        public ActionResult<IEnumerable<UserDto>> GetAll([FromQuery] UserQuery userQuery)
         {
-            var userDtos = _userService.GetAll();
+            var userDtos = _userService.GetAll(userQuery);
 
             return Ok(userDtos);
         }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MemoryPalaceAPI.Models
+namespace MemoryPalaceAPI.Models.TwoDigitSystemModels
 {
     public class CreateTwoDigitSystemDto
     {
