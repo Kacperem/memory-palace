@@ -82,6 +82,29 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
+    option.AddSecurityDefinition("API-KEY", new OpenApiSecurityScheme
+    {
+        Name = "API-KEY",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "ApiKeyScheme",
+        In = ParameterLocation.Header,
+        Description = "ApiKey must appear in header"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "API-KEY"
+                },
+                In = ParameterLocation.Header
+            },
+            new string[]{}
+        }
+    });
 });
 
 builder.Services.AddDbContext<MemoryPalaceDbContext>();
@@ -106,6 +129,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorizationHandler, TwoDigitSystemRequirementHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, UserRequirementHandler>();
 
+builder.Services.AddScoped<ApiKeyMiddleware>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
 builder.Services.AddScoped<SwaggerBasicAuthMiddleware>();
@@ -148,6 +172,7 @@ app.UseMiddleware<SwaggerBasicAuthMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
 
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
