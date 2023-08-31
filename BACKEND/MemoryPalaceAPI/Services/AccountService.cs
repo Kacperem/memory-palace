@@ -34,7 +34,7 @@ namespace MemoryPalaceAPI.Services
             var newUser = new User()
             {
                 Email = dto.Email,
-                RoleId = dto.RoleId
+                RoleId = 1
             };
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
 

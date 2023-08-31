@@ -6,6 +6,13 @@ namespace MemoryPalaceAPI.Middleware
 {
     public class SwaggerBasicAuthMiddleware : IMiddleware
     {
+        private string BasicAuthLogin;
+        private string BasicAuthPassword;
+        public SwaggerBasicAuthMiddleware(Secrets secrets)
+        {
+            BasicAuthLogin = secrets.BasicAuthLogin;
+            BasicAuthPassword = secrets.BasicAuthPassword;
+        }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (context.Request.Path.StartsWithSegments("/swagger"))
@@ -20,8 +27,8 @@ namespace MemoryPalaceAPI.Middleware
                     var username = credentials[0];
                     var password = credentials[1];
                     // validate credentials
-                    if (username.Equals("swagger")
-                      && password.Equals("educational-purposes"))
+                    if (username.Equals(BasicAuthLogin)
+                      && password.Equals(BasicAuthPassword))
                     {
                         await next.Invoke(context).ConfigureAwait(false);
                         return;
