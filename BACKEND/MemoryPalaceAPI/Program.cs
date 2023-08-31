@@ -22,8 +22,11 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
+//Add Secrets
+builder.Configuration.AddJsonFile("secrets.json", optional: true);
+var secrets = new Secrets();
+builder.Configuration.GetSection("SecretKeys").Bind(secrets);
+builder.Services.AddSingleton(secrets);
 
 //Authentication and authorization
 var authenticationSettings = new AuthenticationSettings();
