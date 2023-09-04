@@ -15,7 +15,7 @@ namespace MemoryPalaceAPI.Middleware
             if (!context.Request.Headers.TryGetValue(ApiKeyHeader, out var apiKeyFromUser))
             {
                 context.Response.StatusCode = 401;
-                context.Response.WriteAsync("Api Key not found!");
+                await context.Response.WriteAsync("Api Key not found!");
                 return;
             }
 
@@ -24,10 +24,10 @@ namespace MemoryPalaceAPI.Middleware
             if (!ApiKeyValue.Equals(apiKeyFromUser))
             {
                 context.Response.StatusCode = 401;
-                context.Response.WriteAsync("Unauthorized client");
+                await context.Response.WriteAsync("Unauthorized client");
             }
 
-             next(context);
+            await next(context);
         }
 
     }
