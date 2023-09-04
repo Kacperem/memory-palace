@@ -4,12 +4,15 @@ namespace MemoryPalaceAPI.Entities
 {
     public class MemoryPalaceDbContext : DbContext
     {
-        private string _connectionString = "Server=(localdb)\\mssqllocaldb;Database=MemoryPalaceDb;Trusted_Connection=True;";
+        private string _connectionString;
         public DbSet<TwoDigitElement> TwoDigitElements { get; set; }
         public DbSet<TwoDigitSystem> TwoDigitSystems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-
+        public MemoryPalaceDbContext(Secrets secrets)
+        {
+            _connectionString= secrets.ConnectionString;
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TwoDigitElement>()
