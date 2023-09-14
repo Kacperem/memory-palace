@@ -179,7 +179,9 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagg
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
+
 app.UseMiddleware<ApiKeyMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
