@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MemoryPalaceAPI.Entities;
-using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
+using MemoryPalaceAPI.Models.UserModels;
 
 namespace MemoryPalaceAPI.Mappings
 {
@@ -14,6 +15,9 @@ namespace MemoryPalaceAPI.Mappings
             CreateMap<TwoDigitSystem, TwoDigitSystemDto>();
 
             CreateMap<CreateTwoDigitSystemDto, TwoDigitSystem>();
+
+            CreateMap<User, UserDto>()
+            .ForMember(userDto => userDto.Role, option => option.MapFrom(user => user.Role.Name));
         }
     }
 }
