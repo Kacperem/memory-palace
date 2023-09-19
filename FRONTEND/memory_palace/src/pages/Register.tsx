@@ -3,7 +3,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import IUser from "../types/user.type";
-import { register } from "../services/auth.service";
+import { register } from "../services/authService";
 
 const Register: React.FC = () => {
   const [successful, setSuccessful] = useState<boolean>(false);
@@ -13,7 +13,6 @@ const Register: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    roleId: 1,
   };
 
   const validationSchema = Yup.object().shape({
@@ -35,9 +34,9 @@ const Register: React.FC = () => {
   });
 
   const handleRegister = (formValue: IUser) => {
-    const { email, password, confirmPassword, roleId } = formValue;
+    const { email, password, confirmPassword } = formValue;
 
-    register(email, password, confirmPassword, roleId).then(
+    register(email, password, confirmPassword).then(
       (response) => {
         setMessage(response.data.message);
         setSuccessful(true);
