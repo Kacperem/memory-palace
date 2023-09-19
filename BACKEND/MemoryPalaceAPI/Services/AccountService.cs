@@ -1,10 +1,11 @@
 ﻿using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
-using MemoryPalaceAPI.Models;
+using MemoryPalaceAPI.Models.AccountModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -33,7 +34,7 @@ namespace MemoryPalaceAPI.Services
             var newUser = new User()
             {
                 Email = dto.Email,
-                RoleId = dto.RoleId
+                RoleId = 1
             };
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
 
@@ -78,8 +79,17 @@ namespace MemoryPalaceAPI.Services
                 signingCredentials: cred);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+            var tokenString = tokenHandler.WriteToken(token);
 
+            var response = new
+            {
+                tokenType = "Bearer",
+                token = tokenString,
+                expires = expires.ToString("yyyy-MM-dd HH:mm:ss"),
+                userId = user.Id
+            };
+
+            return JsonConvert.SerializeObject(response);
         }
     }
 }

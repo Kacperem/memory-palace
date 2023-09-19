@@ -3,7 +3,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-import { login } from "../services/auth.service";
+import { login } from "../services/authService";
 
 type Props = {}
 
@@ -26,6 +26,7 @@ const Login: React.FC<Props> = () => {
     password: Yup.string().required("This field is required!"),
   });
 
+  
   const handleLogin = (formValue: { email: string; password: string }) => {
     const { email, password } = formValue;
 
@@ -34,8 +35,8 @@ const Login: React.FC<Props> = () => {
 
     login(email, password).then(
       () => {
-        //navigate("/");
-        //window.location.reload();
+        navigate("/");
+        window.location.reload();
       },
       (error) => {
         const resMessage =

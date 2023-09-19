@@ -1,6 +1,7 @@
-﻿using MemoryPalaceAPI.Models;
+﻿using MemoryPalaceAPI.Models.AccountModels;
 using MemoryPalaceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 
 namespace MemoryPalaceAPI.Controllers
 {

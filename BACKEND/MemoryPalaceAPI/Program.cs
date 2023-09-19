@@ -9,17 +9,27 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using MemoryPalaceAPI.Models.Validators;
-using MemoryPalaceAPI.Models;
 using MemoryPalaceAPI.Middleware;
+using MemoryPalaceAPI.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using MemoryPalaceAPI.Models.AccountModels;
+using MemoryPalaceAPI.Models.AccountModels.Validators;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels;
+using MemoryPalaceAPI.Models.TwoDigitSystemModels.Validators;
+using MemoryPalaceAPI.Models.UserModels;
+using MemoryPalaceAPI.Models.UserModels.Validators;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Add Secrets
+builder.Configuration.AddJsonFile("secrets.json", optional: true);
+var secrets = new Secrets();
+builder.Configuration.GetSection("SecretKeys").Bind(secrets);
+builder.Services.AddSingleton(secrets);
+
 //Authentication and authorization
 var authenticationSettings = new AuthenticationSettings();
-
-//cors policy
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
@@ -49,7 +59,56 @@ builder.Services.AddFluentValidationAutoValidation();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Memory Palace API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+    option.AddSecurityDefinition("API-KEY", new OpenApiSecurityScheme
+    {
+        Name = "API-KEY",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "ApiKeyScheme",
+        In = ParameterLocation.Header,
+        Description = "ApiKey must appear in header"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "API-KEY"
+                },
+                In = ParameterLocation.Header
+            },
+            new string[]{}
+        }
+    });
+});
 
 builder.Services.AddDbContext<MemoryPalaceDbContext>();
 builder.Services.AddScoped<MemoryPalaceSeeder>();
@@ -57,15 +116,29 @@ builder.Services.AddScoped<MemoryPalaceSeeder>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped<ITwoDigitSystemService, TwoDigitSystemService>();
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<CreateTwoDigitSystemDto>, CreateTwoDigitSystemDtoValidator>();
+builder.Services.AddScoped<IValidator<TwoDigitSystemQuery>, TwoDigitSystemQueryValidator>();
+builder.Services.AddScoped<IValidator<UserQuery>, UserQueryValdiator>();
+
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IAuthorizationHandler, TwoDigitSystemRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, UserRequirementHandler>();
+
+builder.Services.AddScoped<ApiKeyMiddleware>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
+builder.Services.AddScoped<SwaggerBasicAuthMiddleware>();
 
+//cors policy
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -73,8 +146,8 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://localhost:5173",
                                               "http://www.example.com")
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+														.AllowAnyMethod()
+                            .AllowAnyHeader();
                       });
 });
 
@@ -90,17 +163,24 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseMiddleware<RequestTimeMiddleware>();
 
+app.UseMiddleware<SwaggerBasicAuthMiddleware>();
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+//app.UseSwaggerAuthorized();
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
 
 
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
