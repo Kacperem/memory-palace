@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Footer from "./components/Footer";
 import CssBaseline from "@mui/material/CssBaseline";
+import Games from "./pages/Games";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="games" element={<Games />} />
         </Routes>
         <Footer />
       </BrowserRouter>
