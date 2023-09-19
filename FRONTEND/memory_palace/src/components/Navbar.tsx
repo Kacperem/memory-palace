@@ -20,7 +20,7 @@ import IUser from "../types/user.type";
 import { useEffect, useState } from "react";
 import EventBus from "../common/EventBus";
 
-const pages = ["Two-Digit System", "Training","games"];
+const pages = ["twodigit", "Training","games"];
 
 const Navbar: React.FC = () => {
   // const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
 
   return (
     <AppBar position="static" color="default">
-      <Container maxWidth="false">
+      <Container>
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
