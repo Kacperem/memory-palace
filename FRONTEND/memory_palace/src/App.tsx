@@ -8,12 +8,13 @@ import Footer from "./components/Footer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Games from "./pages/Games";
 import TwoDigit from "./pages/TwoDigit";
+import QuizGame from "./pages/games/QuizGame";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-      <CssBaseline />
+        <CssBaseline />
         <Navbar />
         <Routes>
           <Route path="" element={<Home />} />
@@ -21,6 +22,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="games" element={<Games />} />
+          <Route path="quiz-game" element={<QuizGame />} />
         </Routes>
         <Footer />
       </BrowserRouter>
