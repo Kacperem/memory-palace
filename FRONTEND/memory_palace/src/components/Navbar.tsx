@@ -20,7 +20,7 @@ import IUser from "../types/user.type";
 import { useEffect, useState } from "react";
 import EventBus from "../common/EventBus";
 
-const pages = ["twodigit", "Training","games"];
+const pages = ["twodigit", "Training"];
 
 const Navbar: React.FC = () => {
   // const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
@@ -153,7 +153,7 @@ const Navbar: React.FC = () => {
               </Button>
             ))}
           </Box>
-{!currentUser ? (
+          {!currentUser ? (
             <Box sx={{ justifyContent: "flex-end" }}>
               <ButtonGroup>
                 <IconButton sx={{ p: 1 }}>
@@ -180,7 +180,7 @@ const Navbar: React.FC = () => {
                 </IconButton>
               </ButtonGroup>
             </Box>
-) : (
+          ) : (
             <Box sx={{ justifyContent: "flex-end" }}>
               <ButtonGroup>
                 <IconButton sx={{ p: 1 }}>
@@ -197,7 +197,7 @@ const Navbar: React.FC = () => {
                 </IconButton>
               </ButtonGroup>
             </Box>
-)}
+          )}
         </Toolbar>
       </Container>
     </AppBar>

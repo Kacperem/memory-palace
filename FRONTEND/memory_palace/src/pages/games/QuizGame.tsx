@@ -55,10 +55,10 @@ export default function Quiz() {
   ];
   const buttonsData = questionData.answers.map((answer, index) => ({
     buttonText: `${answer.text}`,
-    svgPath: answer.isCorrect
+    svgPath: selectedAnswerState
       ? "M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10s10-4.5,10-10S17.5,2,12,2z M10.8,16.8l-3.7-3.7l1.4-1.4l2.2,2.2l5.8-6.1L18,9.3 L10.8,16.8z"
       : "M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm3.71,12.29a1,1,0,0,1,0,1.42,1,1,0,0,1-1.42,0L12,13.42,9.71,15.71a1,1,0,0,1-1.42,0,1,1,0,0,1,0-1.42L10.58,12,8.29,9.71A1,1,0,0,1,9.71,8.29L12,10.58l2.29-2.29a1,1,0,0,1,1.42,1.42L13.42,12Z",
-    svgClassName: answer.isCorrect ? "fill-green-600" : "fill-red-600",
+    svgClassName: selectedAnswerState ? "fill-green-600" : "fill-red-600",
     onClick: () => handleAnswer(answer.isCorrect),
     borderWidth: borderWidths[index],
     borderRadius: borderRadiuses[index],
