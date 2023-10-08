@@ -20,7 +20,7 @@ import IUser from "../types/user.type";
 import { useEffect, useState } from "react";
 import EventBus from "../common/EventBus";
 
-const pages = ["twodigit", "Training"];
+const pages = ["twodigit", "Training", "Challenge"];
 
 const Navbar: React.FC = () => {
   // const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
