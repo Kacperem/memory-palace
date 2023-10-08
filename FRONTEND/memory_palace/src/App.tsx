@@ -9,6 +9,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TwoDigit from "./pages/TwoDigit";
 import QuizGame from "./pages/games/QuizGame";
 import Training from "./pages/Training";
+import Challenge from "./pages/Challenge";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="training" element={<Training />} />
           <Route path="quiz-game" element={<QuizGame />} />
+          <Route path="challenge" element={<Challenge />} />
         </Routes>
         <Footer />
       </BrowserRouter>
