@@ -6,21 +6,25 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Footer from "./components/Footer";
 import CssBaseline from "@mui/material/CssBaseline";
-import Games from "./pages/Games";
 import TwoDigit from "./pages/TwoDigit";
+import QuizGame from "./pages/games/QuizGame";
+import Training from "./pages/Training";
+import Challenge from "./pages/Challenge";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-      <CssBaseline />
+        <CssBaseline />
         <Navbar />
         <Routes>
           <Route path="" element={<Home />} />
           <Route path="twodigit" element={<TwoDigit />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="games" element={<Games />} />
+          <Route path="training" element={<Training />} />
+          <Route path="quiz-game" element={<QuizGame />} />
+          <Route path="challenge" element={<Challenge />} />
         </Routes>
         <Footer />
       </BrowserRouter>
