@@ -15,14 +15,42 @@ import AdbIcon from "@mui/icons-material/Adb";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { Link } from "react-router-dom";
 
-const pages = ["Two-Digit System", "Training"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import * as AuthService from "../services/authService";
+import IUser from "../types/user.type";
+import { useEffect, useState } from "react";
+import EventBus from "../common/EventBus";
 
-function Navbar() {
+const pages = ["twodigit", "Training", "Challenge"];
+
+const Navbar: React.FC = () => {
+  // const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
+  // const [showAdminBoard, setShowAdminBoard] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      setCurrentUser(user);
+      // setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
+      // setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+    }
+
+    EventBus.on("logout", logOut);
+
+    return () => {
+      EventBus.remove("logout", logOut);
+    };
+  }, []);
+
+  const logOut = () => {
+    AuthService.logout();
+    // setShowModeratorBoard(false);
+    // setShowAdminBoard(false);
+    setCurrentUser(undefined);
+  };
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
@@ -34,13 +62,9 @@ function Navbar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   return (
     <AppBar position="static" color="default">
-      <Container maxWidth="false">
+      <Container>
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
@@ -120,6 +144,8 @@ function Navbar() {
             {pages.map((page) => (
               <Button
                 key={page}
+                component={Link}
+                to={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 1, color: "inherit", display: "block" }}
               >
@@ -127,57 +153,54 @@ function Navbar() {
               </Button>
             ))}
           </Box>
-          <Box sx={{ justifyContent: "flex-end" }}>
-            <ButtonGroup>
-              <IconButton sx={{ p: 1 }}>
-                <Button
-                  component={Link}
-                  to="login"
-                  variant="contained"
-                  color="secondary"
-                  endIcon={<LoginIcon />}
-                >
-                  Login
-                </Button>
-              </IconButton>
-              <IconButton sx={{ p: 1 }}>
-                <Button
-                  component={Link}
-                  to="register"
-                  variant="outlined"
-                  color="secondary"
-                  endIcon={<VpnKeyIcon />}
-                >
-                  Register
-                </Button>
-              </IconButton>
-            </ButtonGroup>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          {!currentUser ? (
+            <Box sx={{ justifyContent: "flex-end" }}>
+              <ButtonGroup>
+                <IconButton sx={{ p: 1 }}>
+                  <Button
+                    component={Link}
+                    to="login"
+                    variant="contained"
+                    color="secondary"
+                    endIcon={<LoginIcon />}
+                  >
+                    Login
+                  </Button>
+                </IconButton>
+                <IconButton sx={{ p: 1 }}>
+                  <Button
+                    component={Link}
+                    to="register"
+                    variant="outlined"
+                    color="secondary"
+                    endIcon={<VpnKeyIcon />}
+                  >
+                    Register
+                  </Button>
+                </IconButton>
+              </ButtonGroup>
+            </Box>
+          ) : (
+            <Box sx={{ justifyContent: "flex-end" }}>
+              <ButtonGroup>
+                <IconButton sx={{ p: 1 }}>
+                  <Button
+                    component={Link}
+                    to="login"
+                    onClick={logOut}
+                    variant="contained"
+                    color="secondary"
+                    endIcon={<LoginIcon />}
+                  >
+                    Logout
+                  </Button>
+                </IconButton>
+              </ButtonGroup>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
   );
-}
+};
 export default Navbar;
