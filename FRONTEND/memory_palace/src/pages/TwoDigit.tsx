@@ -6,4 +6,4 @@ const TwoDigit:React.FC = () => {
   )
 }
 
-export default TwoDigit
+export default TwoDigit;
