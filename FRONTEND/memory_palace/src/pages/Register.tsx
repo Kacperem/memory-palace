@@ -27,10 +27,9 @@ const Register: React.FC = () => {
           val && val.toString().length >= 6 && val.toString().length <= 40
       )
       .required("This field is required!"),
-    confirmPassword: Yup.string().oneOf(
-      [Yup.ref("password")],
-      "Password must match!"
-    ),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password")], "Password must match!")
+      .required("This field is required!"),
   });
 
   const handleRegister = (formValue: IUser) => {
@@ -56,77 +55,104 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="col-md-12">
-      <div className="card card-container">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleRegister}
-        >
-          <Form>
-            {!successful && (
-              <div>
-                <div className="form-group">
-                  <label htmlFor="email"> Email </label>
-                  <Field name="email" type="email" className="form-control" />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="alert alert-danger"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="password"> Password </label>
-                  <Field
-                    name="password"
-                    type="password"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="alert alert-danger"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="confirmPassword"> Confirm Password </label>
-                  <Field
-                    name="confirmPassword"
-                    type="password"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="confirmPassword"
-                    component="div"
-                    className="alert alert-danger"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <button type="submit" className="btn btn-primary btn-block">
-                    Sign Up
-                  </button>
-                </div>
+    <div className="flex flex-col items-center p-10">
+      <h3 className="mb-8 font-extrabold text-2xl text-center">
+        Register to unlock your world of memory digits
+      </h3>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleRegister}
+      >
+        <Form>
+          {!successful && (
+            <div className="flex flex-col items-center justify-center bg-gray-300 m-15 p-12 rounded-md w-[21rem]">
+              <div className="mt-1">
+                <label className="block font-semibold" htmlFor="email">
+                  {" "}
+                  Email{" "}
+                </label>
+                <Field
+                  id="email"
+                  className="w-full shadow-inner bg-gray-100 rounded-lg placeholder-black p-3 border-none block mt-1"
+                  name="email"
+                  type="email"
+                  placeholder="example@email.com"
+                  autoComplete="email"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="mt-1 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                />
               </div>
-            )}
+              <div className="mt-4">
+                <label className="block font-semibold" htmlFor="password">
+                  {" "}
+                  Password{" "}
+                </label>
+                <Field
+                  id="password"
+                  className="w-full shadow-inner bg-gray-100 rounded-lg placeholder-black p-3 border-none block mt-1"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="mt-1 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                />
+              </div>
 
-            {message && (
-              <div className="form-group">
-                <div
-                  className={
-                    successful ? "alert alert-success" : "alert alert-danger"
-                  }
-                  role="alert"
+              <div className="mt-4">
+                <label
+                  className="block font-semibold"
+                  htmlFor="confirmPassword"
                 >
-                  {message}
-                </div>
+                  {" "}
+                  Confirm Password{" "}
+                </label>
+                <Field
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  className="w-full shadow-inner bg-gray-100 rounded-lg placeholder-black p-3 border-none block mt-1"
+                  autoComplete="current-password"
+                />
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="mt-1 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                />
               </div>
-            )}
-          </Form>
-        </Formik>
-      </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="px-8 py-1 border border-transparent text-base font-medium rounded-md text-white bg-fuchsia-700 hover:bg-fuchsia-800"
+                >
+                  <span>Sign Up</span>
+                </button>
+              </div>
+              {message && (
+                <div className="mt-4">
+                  <div
+                    className={
+                      successful
+                        ? "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                        : "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    }
+                    role="alert"
+                  >
+                    {message}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </Form>
+      </Formik>
     </div>
   );
 };
