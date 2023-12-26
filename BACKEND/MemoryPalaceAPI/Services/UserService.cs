@@ -2,6 +2,7 @@
 using MemoryPalaceAPI.Authorization;
 using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
+using MemoryPalaceAPI.Mappings;
 using MemoryPalaceAPI.Models;
 using MemoryPalaceAPI.Models.TwoDigitSystemModels;
 using MemoryPalaceAPI.Models.UserModels;
@@ -23,11 +24,11 @@ namespace MemoryPalaceAPI.Services
     public class UserService : IUserService
     {
         private readonly MemoryPalaceDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly MemoryPalaceMappingService _mapper;
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
 
-        public UserService(MemoryPalaceDbContext dbContext, IMapper mapper, IAuthorizationService authorizationService, IUserContextService userContextService)
+        public UserService(MemoryPalaceDbContext dbContext, MemoryPalaceMappingService mapper, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -64,7 +65,7 @@ namespace MemoryPalaceAPI.Services
 
             var totalItemsCount = baseQuery.Count();
 
-            var usersDtos = _mapper.Map<List<UserDto>>(users);
+            var usersDtos = users.Select(_mapper.MapToUserDto).ToList();
             var result = new PagedResult<UserDto>(usersDtos, totalItemsCount, userQuery.PageSize, userQuery.PageNumber);
             return result;
         }
@@ -86,7 +87,7 @@ namespace MemoryPalaceAPI.Services
                 throw new ForbidException();
             }
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = _mapper.MapToUserDto(user);
             return userDto;
         }
 
