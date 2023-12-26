@@ -2,6 +2,7 @@
 using MemoryPalaceAPI.Authorization;
 using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
+using MemoryPalaceAPI.Mappings;
 using MemoryPalaceAPI.Models;
 using MemoryPalaceAPI.Models.TwoDigitSystemModels;
 using Microsoft.AspNetCore.Authorization;
@@ -24,11 +25,11 @@ namespace MemoryPalaceAPI.Services
     public class TwoDigitSystemService : ITwoDigitSystemService
     {
         private readonly MemoryPalaceDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly MemoryPalaceMappingService _mapper;
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
 
-        public TwoDigitSystemService(MemoryPalaceDbContext dbContext, IMapper mapper, IAuthorizationService authorizationService, IUserContextService userContextService)
+        public TwoDigitSystemService(MemoryPalaceDbContext dbContext, MemoryPalaceMappingService mapper, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -38,7 +39,7 @@ namespace MemoryPalaceAPI.Services
 
         public int Create(CreateTwoDigitSystemDto createTwoDigitSystemDto)
         {
-            var twoDigitSystem = _mapper.Map<TwoDigitSystem>(createTwoDigitSystemDto);
+            var twoDigitSystem = _mapper.MapToTwoDigitSystem(createTwoDigitSystemDto);
             twoDigitSystem.CreatedById = _userContextService.GetUserId;
             _dbContext.TwoDigitSystems.Add(twoDigitSystem);
             _dbContext.SaveChanges();
@@ -95,7 +96,7 @@ namespace MemoryPalaceAPI.Services
                 .ToList();
 
             var totalItemsCount = baseQuery.Count();
-            var twoDigitSystemsDtos = _mapper.Map<List<TwoDigitSystemDto>>(twoDigitSystems);
+            var twoDigitSystemsDtos = twoDigitSystems.Select(_mapper.MapToTwoDigitSystemDto).ToList();
             var result = new PagedResult<TwoDigitSystemDto>(twoDigitSystemsDtos, totalItemsCount, twoDigitSystemQuery.PageSize, twoDigitSystemQuery.PageNumber);
             return result;
         }
@@ -117,7 +118,7 @@ namespace MemoryPalaceAPI.Services
                 throw new ForbidException();
             }
 
-            var twoDigitSystemsDto = _mapper.Map<TwoDigitSystemDto>(twoDigitSystem);
+            var twoDigitSystemsDto = _mapper.MapToTwoDigitSystemDto(twoDigitSystem);
             return twoDigitSystemsDto;
         }
 
@@ -138,8 +139,7 @@ namespace MemoryPalaceAPI.Services
                 throw new ForbidException();
             }
 
-            twoDigitSystem.TwoDigitElements = _mapper.Map<List<TwoDigitElement>>( createTwoDigitSystemDto.TwoDigitElements);
-
+            twoDigitSystem.TwoDigitElements = createTwoDigitSystemDto.TwoDigitElements.Select(_mapper.MapToTwoDigitElement).ToList();
             _dbContext.SaveChanges();
 
             return true;

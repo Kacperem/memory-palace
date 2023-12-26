@@ -19,6 +19,7 @@ using MemoryPalaceAPI.Models.TwoDigitSystemModels.Validators;
 using MemoryPalaceAPI.Models.UserModels;
 using MemoryPalaceAPI.Models.UserModels.Validators;
 using Microsoft.OpenApi.Models;
+using MemoryPalaceAPI.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,7 +114,7 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddDbContext<MemoryPalaceDbContext>();
 builder.Services.AddScoped<MemoryPalaceSeeder>();
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<MemoryPalaceMappingService>();
 
 builder.Services.AddScoped<ITwoDigitSystemService, TwoDigitSystemService>();
 builder.Services.AddScoped<IUserService, UserService>();
