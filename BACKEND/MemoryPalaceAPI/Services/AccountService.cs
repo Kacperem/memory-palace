@@ -1,6 +1,7 @@
 ﻿using MemoryPalaceAPI.Entities;
 using MemoryPalaceAPI.Exceptions;
 using MemoryPalaceAPI.Models.AccountModels;
+using MemoryPalaceAPI.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,12 +23,14 @@ namespace MemoryPalaceAPI.Services
         private readonly MemoryPalaceDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly MemoryPalaceSeeder _memoryPalaceSeeder;
 
-        public AccountService(MemoryPalaceDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        public AccountService(MemoryPalaceDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, MemoryPalaceSeeder memoryPalaceSeeder)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _memoryPalaceSeeder = memoryPalaceSeeder;
         }
         public void RegisterUser(RegisterUserDto dto)
         {
@@ -41,6 +44,7 @@ namespace MemoryPalaceAPI.Services
             newUser.PasswordHash = hashedPassword;
             _context.Users.Add(newUser);
             _context.SaveChanges();
+            _memoryPalaceSeeder.CreateDefaultTwoDigitSystem(newUser.Id);
         }
 
         public string GenerateJwt(LoginDto dto)

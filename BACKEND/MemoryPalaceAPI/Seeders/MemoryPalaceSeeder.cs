@@ -11,7 +11,19 @@ namespace MemoryPalaceAPI.Seeders
         {
             _dbContext= dbContext;
         }
+        public void CreateDefaultTwoDigitSystem(int userId)
+        {
 
+            var existingTwoDigitSystemSystem = _dbContext.TwoDigitSystems.SingleOrDefault(twoDigitSystem => twoDigitSystem.CreatedById == userId);
+
+            if (existingTwoDigitSystemSystem == null)
+            {
+                TwoDigitSystem twoDigitSystem = GetTwoDigitSystems().ElementAt(2);
+                twoDigitSystem.CreatedById = userId;
+                _dbContext.TwoDigitSystems.Add(twoDigitSystem);
+                _dbContext.SaveChanges();
+            }
+        }
         public void Seed()
         {
             if (_dbContext.Database.CanConnect())
