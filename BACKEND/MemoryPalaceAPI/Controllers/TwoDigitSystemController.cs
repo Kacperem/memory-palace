@@ -46,6 +46,12 @@ namespace MemoryPalaceAPI.Controllers
             var twoDigitSystemsDto = _twoDigitSystemService.GetById(id);
             return Ok(twoDigitSystemsDto);
         }
+        [HttpGet("UserId/{userid}/")]
+        public ActionResult<TwoDigitSystemDto> GetByCreatedById([FromRoute] int userId)
+        {
+            var twoDigitSystemsDto = _twoDigitSystemService.GetByUserId(userId);
+            return Ok(twoDigitSystemsDto);
+        }
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] CreateTwoDigitSystemDto createTwoDigitSystemDto, [FromRoute]int id)
         {

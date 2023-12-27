@@ -19,8 +19,7 @@ namespace MemoryPalaceAPI.Services
         int Create(CreateTwoDigitSystemDto createTwoDigitSystemDto);
         bool Update(int id, CreateTwoDigitSystemDto createTwoDigitSystemDto);
         void Delete(int id);
-
-
+        object GetByUserId(int userid);
     }
     public class TwoDigitSystemService : ITwoDigitSystemService
     {
@@ -101,6 +100,27 @@ namespace MemoryPalaceAPI.Services
             return result;
         }
 
+        public object GetByUserId(int userId)
+        {
+            var twoDigitSystem = _dbContext.
+                TwoDigitSystems
+                .Include(r => r.TwoDigitElements)
+                .FirstOrDefault(r => r.CreatedById == userId);
+            if (twoDigitSystem is null)
+                throw new NotFoundException("TwoDigitSystem not found");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
+                new TwoDigitSystemRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+            var twoDigitSystemsDto = _mapper.MapToTwoDigitSystemDto(twoDigitSystem);
+            return twoDigitSystemsDto;
+        }
+
         public TwoDigitSystemDto GetById(int id)
         {
             var twoDigitSystem = _dbContext.
@@ -108,7 +128,7 @@ namespace MemoryPalaceAPI.Services
                 .Include(r => r.TwoDigitElements)
                 .FirstOrDefault(r => r.Id == id);
             if (twoDigitSystem is null)
-                throw new NotFoundException("Restaurant not found");
+                throw new NotFoundException("TwoDigitSystem not found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
                 new TwoDigitSystemRequirement(ResourceOperation.Delete)).Result;
