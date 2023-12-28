@@ -40,6 +40,15 @@ namespace MemoryPalaceAPI.Services
         {
             var twoDigitSystem = _mapper.MapToTwoDigitSystem(createTwoDigitSystemDto);
             twoDigitSystem.CreatedById = _userContextService.GetUserId;
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
+                new TwoDigitSystemRequirement(ResourceOperation.Create)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new BadRequestException("There is already a TwoDigitSystem created by this user.");
+            }
+
             _dbContext.TwoDigitSystems.Add(twoDigitSystem);
             _dbContext.SaveChanges();
             return twoDigitSystem.Id;
@@ -53,7 +62,7 @@ namespace MemoryPalaceAPI.Services
                 .FirstOrDefault(r => r.Id == id);
 
             if (twoDigitSystem is null)
-                throw new NotFoundException("Restaurant not found");
+                throw new NotFoundException("TwoDigitSystem not found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
                 new TwoDigitSystemRequirement(ResourceOperation.Delete)).Result;
@@ -150,7 +159,7 @@ namespace MemoryPalaceAPI.Services
                 .FirstOrDefault(r => r.Id == id);
 
             if (twoDigitSystem is null)
-                throw new NotFoundException("Restaurant not found");
+                throw new NotFoundException("TwoDigitSystem not found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, twoDigitSystem,
                 new TwoDigitSystemRequirement(ResourceOperation.Update)).Result;
