@@ -60,7 +60,7 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///get TwoDigitSystem by ID of the user who created it
         /// </summary>
-        [HttpGet("UserId/{userid}/")]
+        [HttpGet("UserId/{userId}")]
         public ActionResult<TwoDigitSystemDto> GetByCreatedById([FromRoute] int userId)
         {
             var twoDigitSystemsDto = _twoDigitSystemService.GetByUserId(userId);
