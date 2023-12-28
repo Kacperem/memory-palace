@@ -15,13 +15,18 @@ namespace MemoryPalaceAPI.Controllers
         {
             _accountService = accountService;
         }
+        /// <summary>
+        ///register a new user
+        /// </summary>
         [HttpPost("register")]
         public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
             _accountService.RegisterUser(dto);
             return Ok();
         }
-
+        /// <summary>
+        ///login and get JWT token 
+        /// </summary>
         [HttpPost("login")]
         public ActionResult Login([FromBody] LoginDto dto)
         {

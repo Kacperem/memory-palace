@@ -20,6 +20,8 @@ using MemoryPalaceAPI.Models.UserModels;
 using MemoryPalaceAPI.Models.UserModels.Validators;
 using Microsoft.OpenApi.Models;
 using MemoryPalaceAPI.Mappings;
+using Microsoft.Extensions.Options;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +65,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Memory Palace API", Version = "v1" });
+
+    //Adds documantation to swagger 
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
