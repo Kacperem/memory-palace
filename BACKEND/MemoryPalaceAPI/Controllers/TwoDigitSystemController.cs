@@ -20,6 +20,10 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///create a new TwoDigitSystem
         /// </summary>
+        /// <response code="201">TwoDigitSystem created successfully</response>
+        /// <response code="400">TwoDigitSystem validation error</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost]
         public ActionResult Create([FromBody] CreateTwoDigitSystemDto createTwoDigitSystemDto) 
         {
@@ -29,6 +33,11 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///delete TwoDigitSystem by TwoDigitSystem ID
         /// </summary>
+        /// <response code="204">TwoDigitSystem deleted successfully</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        /// <response code="404">TwoDigitSystem not found</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
@@ -39,6 +48,11 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///get all TwoDigitSystems, only for admins
         /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="400">Query validation error</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
         [Authorize(Roles = "Admin")]
         //[AllowAnonymous]
@@ -51,6 +65,11 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///get TwoDigitSystem by TwoDigitSystem ID
         /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        /// <response code="404">TwoDigitSystem not found</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{id}")]
         public ActionResult<TwoDigitSystemDto> GetById([FromRoute] int id)
         {
@@ -60,6 +79,11 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///get TwoDigitSystem by ID of the user who created it
         /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        /// <response code="404">TwoDigitSystem not found</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("UserId/{userId}")]
         public ActionResult<TwoDigitSystemDto> GetByCreatedById([FromRoute] int userId)
         {
@@ -69,6 +93,12 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///update TwoDigitSystem by TwoDigitSystem ID
         /// </summary>>
+        /// <response code="200">OK</response>
+        /// <response code="400">TwoDigitSystem validation error</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        /// <response code="404">TwoDigitSystem not found</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] CreateTwoDigitSystemDto createTwoDigitSystemDto, [FromRoute]int id)
         {

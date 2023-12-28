@@ -18,6 +18,11 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///get all Users, only for admins
         /// </summary>>
+        /// <response code="200">OK</response>
+        /// <response code="400">Query validation error</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult<IEnumerable<UserDto>> GetAll([FromQuery] UserQuery userQuery)
@@ -29,6 +34,11 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///get User by User ID
         /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="401">Invalid or missing authentication credentials</response>
+        /// <response code="403">Access forbidden</response>
+        /// <response code="404">User not found</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{id}")]
         public ActionResult<UserDto> GetById([FromRoute] int id)
         {

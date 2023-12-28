@@ -18,6 +18,9 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///register a new user
         /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="400">User validation error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("register")]
         public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
@@ -27,6 +30,9 @@ namespace MemoryPalaceAPI.Controllers
         /// <summary>
         ///login and get JWT token 
         /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="400">Invalid username or password</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("login")]
         public ActionResult Login([FromBody] LoginDto dto)
         {
