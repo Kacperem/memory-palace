@@ -22,6 +22,8 @@ using Microsoft.OpenApi.Models;
 using MemoryPalaceAPI.Mappings;
 using Microsoft.Extensions.Options;
 using System.Reflection;
+using Swashbuckle.AspNetCore.Filters;
+using MemoryPalaceAPI.Swagger.Examples;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +64,7 @@ builder.Services.AddFluentValidationAutoValidation();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateTwoDigitSystemDtoExample>();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Memory Palace API", Version = "v1" });
@@ -69,6 +72,8 @@ builder.Services.AddSwaggerGen(option =>
     //Adds documantation to swagger 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+    option.ExampleFilters();
 
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
