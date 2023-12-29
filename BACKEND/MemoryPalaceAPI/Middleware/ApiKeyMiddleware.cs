@@ -14,17 +14,14 @@ namespace MemoryPalaceAPI.Middleware
         {
             if (!context.Request.Headers.TryGetValue(ApiKeyHeader, out var apiKeyFromUser))
             {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Api Key not found!");
-                return;
+                throw new UnauthorizedException("Api Key not found");
             }
 
             var appSettings = context.RequestServices.GetRequiredService<IConfiguration>();
 
             if (!ApiKeyValue.Equals(apiKeyFromUser))
             {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Unauthorized client");
+                throw new UnauthorizedException("Unauthorized client");
             }
 
             await next(context);
