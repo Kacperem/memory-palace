@@ -67,7 +67,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateTwoDigitSystemDtoExample>();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Memory Palace API", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Memory Palace API",
+        Version = "v1",
+        Description = "Welcome to the Memory Palace REST API, built with ASP.NET Core. " +
+        "This is the backend component of the MemoryPalace application, " +
+        "which is used to manage users and two-digit number systems. " +
+        "Let me know if you find any bugs. Have fun (:",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "Example Contact",
+            Url = new Uri("https://example.com/contact")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Example License",
+            Url = new Uri("https://example.com/license")
+        }
+    });
 
     //Adds documantation to swagger 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
