@@ -8,7 +8,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 // };
 
 export const getUserBoard = () => {
-  return axios.get(API_URL + "user", { headers: authHeader() });
+  return axios.get(
+    API_URL + "user", { headers: authHeader() });
 };
 
 // export const getModeratorBoard = () => {
