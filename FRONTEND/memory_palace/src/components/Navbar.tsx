@@ -1,41 +1,37 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
+import { PaletteMode } from "@mui/material";
 import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import LoginIcon from "@mui/icons-material/Login";
 import Button from "@mui/material/Button";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
+import Drawer from "@mui/material/Drawer";
+import MenuIcon from "@mui/icons-material/Menu";
+import ToggleColorMode from "./ToggleColorMode";
 import AdbIcon from "@mui/icons-material/Adb";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import EventBus from "../common/EventBus";
+import { useEffect, useState } from "react";
 import * as AuthService from "../services/authService";
 import IUser from "../types/user.type";
-import { useEffect, useState } from "react";
-import EventBus from "../common/EventBus";
 
-const pages = ["twodigit", "Training", "Challenge"];
+interface NavbarProps {
+  mode: PaletteMode;
+  toggleColorMode: () => void;
+}
 
-const Navbar: React.FC = () => {
-  // const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
-  // const [showAdminBoard, setShowAdminBoard] = useState<boolean>(false);
+const Navbar = ({ mode, toggleColorMode }: NavbarProps) => {
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const user = AuthService.getCurrentUser();
 
     if (user) {
       setCurrentUser(user);
-      // setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
-      // setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
-
     EventBus.on("logout", logOut);
 
     return () => {
@@ -45,162 +41,241 @@ const Navbar: React.FC = () => {
 
   const logOut = () => {
     AuthService.logout();
-    // setShowModeratorBoard(false);
-    // setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
 
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [open, setOpen] = React.useState(false);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
   };
 
   return (
-    <AppBar position="static" color="default">
-      <Container>
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
+    <div>
+      <AppBar
+        position="fixed"
+        sx={{
+          boxShadow: 0,
+          bgcolor: "transparent",
+          backgroundImage: "none",
+          mt: 2,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Toolbar
+            variant="regular"
+            sx={(theme) => ({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexShrink: 0,
+              borderRadius: "999px",
+              bgcolor:
+                theme.palette.mode === "light"
+                  ? "rgba(255, 255, 255, 0.4)"
+                  : "rgba(0, 0, 0, 0.4)",
+              backdropFilter: "blur(24px)",
+              maxHeight: 40,
+              border: "1px solid",
+              borderColor: "divider",
+              boxShadow:
+                theme.palette.mode === "light"
+                  ? `0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)`
+                  : "0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)",
+            })}
           >
-            Palace Memory
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+            <Box
               sx={{
-                display: { xs: "block", md: "none" },
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                ml: "-18px",
+                px: 0,
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              <Box sx={{ display: { xs: "flex", md: "flex" } }}>
+                <MenuItem
+                  onClick={() => navigate("/")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <AdbIcon
+                    sx={{
+                      color: (theme) =>
+                        theme.palette.mode === "light"
+                          ? "primary.main"
+                          : "primary.light",
+                      display: { xs: "flex", md: "flex" },
+                      mr: 1,
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    noWrap
+                    component="a"
+                    sx={{
+                      mr: 2,
+                      display: { xs: "flex", md: "flex" },
+                      fontFamily: "monospace",
+                      fontWeight: 700,
+                      letterSpacing: ".3rem",
+                      color: (theme) =>
+                        theme.palette.mode === "light"
+                          ? "primary.main"
+                          : "primary.light",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Palace Memory
+                  </Typography>
                 </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            Palace Memory
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, xs: 1 }}>
-            {pages.map((page) => (
+              </Box>
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <MenuItem
+                  onClick={() => navigate("twodigit")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Twodigit
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => navigate("training")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Training
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => navigate("challenge")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Challenge
+                  </Typography>
+                </MenuItem>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                gap: 0.5,
+                alignItems: "center",
+              }}
+            >
+              <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+              {!currentUser ? (
+                <div>
+                  <Button
+                    color="primary"
+                    variant="text"
+                    size="small"
+                    component="a"
+                    onClick={() => navigate("login")}
+                    target="_blank"
+                  >
+                    Sign in
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    component="a"
+                    onClick={() => navigate("register")}
+                    target="_blank"
+                  >
+                    Sign up
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  component="a"
+                  onClick={logOut}
+                  target="_blank"
+                >
+                  Logout
+                </Button>
+              )}
+            </Box>
+
+            <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
-                key={page}
-                component={Link}
-                to={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 1, color: "inherit", display: "block" }}
+                variant="text"
+                color="primary"
+                aria-label="menu"
+                onClick={toggleDrawer(true)}
+                sx={{ minWidth: "30px", p: "4px" }}
               >
-                {page}
+                <MenuIcon />
               </Button>
-            ))}
-          </Box>
-          {!currentUser ? (
-            <Box sx={{ justifyContent: "flex-end" }}>
-              <ButtonGroup>
-                <IconButton sx={{ p: 1 }}>
-                  <Button
-                    component={Link}
-                    to="login"
-                    variant="contained"
-                    color="secondary"
-                    endIcon={<LoginIcon />}
+              <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+                <Box
+                  sx={{
+                    minWidth: "60dvw",
+                    p: 2,
+                    backgroundColor: "background.paper",
+                    flexGrow: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "end",
+                      flexGrow: 1,
+                    }}
                   >
-                    Login
-                  </Button>
-                </IconButton>
-                <IconButton sx={{ p: 1 }}>
-                  <Button
-                    component={Link}
-                    to="register"
-                    variant="outlined"
-                    color="secondary"
-                    endIcon={<VpnKeyIcon />}
-                  >
-                    Register
-                  </Button>
-                </IconButton>
-              </ButtonGroup>
+                    <ToggleColorMode
+                      mode={mode}
+                      toggleColorMode={toggleColorMode}
+                    />
+                  </Box>
+                  <MenuItem onClick={() => navigate("twodigit")}>
+                    Twodigit
+                  </MenuItem>
+                  <MenuItem onClick={() => navigate("training")}>
+                    Training
+                  </MenuItem>
+                  <MenuItem onClick={() => navigate("challenge")}>
+                    Challenge
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      component="a"
+                      href="/material-ui/getting-started/templates/sign-up/"
+                      target="_blank"
+                      sx={{ width: "100%" }}
+                    >
+                      Sign up
+                    </Button>
+                  </MenuItem>
+                  <MenuItem>
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      component="a"
+                      href="/material-ui/getting-started/templates/sign-in/"
+                      target="_blank"
+                      sx={{ width: "100%" }}
+                    >
+                      Sign in
+                    </Button>
+                  </MenuItem>
+                </Box>
+              </Drawer>
             </Box>
-          ) : (
-            <Box sx={{ justifyContent: "flex-end" }}>
-              <ButtonGroup>
-                <IconButton sx={{ p: 1 }}>
-                  <Button
-                    component={Link}
-                    to="login"
-                    onClick={logOut}
-                    variant="contained"
-                    color="secondary"
-                    endIcon={<LoginIcon />}
-                  >
-                    Logout
-                  </Button>
-                </IconButton>
-              </ButtonGroup>
-            </Box>
-          )}
-        </Toolbar>
-      </Container>
-    </AppBar>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </div>
   );
-};
+}
+
 export default Navbar;
